@@ -20,12 +20,24 @@ You have to install:
 * [click](https://pypi.org/project/click/)
 * [pygit2](https://www.pygit2.org/install.html)
 
-Then download the source code from the github (the green download button) and extract it somewhere you like.
+after installing Python run these commands in the command line to install `click` and `pygit2`:
+
+```
+pip install --user click
+pip install --user pygit2
+```
+
+Then [download](https://github.com/Ovsyanka/medivia-launcher/archive/master.zip) the source code from the github and extract it somewhere you like.
 
 # Usage
 
+Run command line in the extracted folder and execute the command:
+
 ```
 python medivia-launcher.py --executable=<path to the medivia binary> --instance=<instanceName>
+
+# Windows example:
+python main.py --executable="C:\Program Files (x86)\Medivia Online\Medivia_OGL.exe" --instance=instance1
 ```
 
 # Under the hood

@@ -11,6 +11,29 @@ import gitOperations
 
 # TODO: make config sets for different platforms.
 
+
+def getHomePathEnvironName() -> str:
+    """
+    Returning crossplatform user home path environment variable name.
+    
+    Returns:
+        str -- crossplatform user home path environment variable name.
+    """
+
+    # if USERPROFILE defined considering this is the Windows system
+    if os.environ.get('USERPROFILE') is not None:
+        return 'USERPROFILE'
+    # else it is the linux or Mac
+    else:
+        return 'HOME'
+
+
+def getGameConfigFolderName():
+    if platform.system() is 'Windows':
+        return 'medivia'
+    else:
+        return '.medivia'
+
 homePathEnvironName = getHomePathEnvironName()
 homePath = os.environ[homePathEnvironName]
 
@@ -32,6 +55,10 @@ def version():
 @click.option('--executable', default='medivia', help='Full path for medivia executable ("medivia" by default).')
 # @click.argument('executable')
 def launchMedivia(executable='medivia', instance=None):
+    # if platform.system() is 'Windows':
+        # TODO: here we have some space character between " and C, investigate this
+        # executable = '"C:\Program Files (x86)\Medivia Online\Medivia_OGL.exe"'
+        # executable = 'C:\Program Files (x86)\Medivia Online\Medivia_OGL.exe'
     print(executable)
     print(instance)
 
@@ -58,6 +85,8 @@ def launchMedivia(executable='medivia', instance=None):
 
     env = os.environ.copy()
     env[homePathEnvironName] = currentHomePath
+    
+    print("runnning " + executable)
     process = subprocess.Popen([executable], env=env)
 
     pid = process.pid
@@ -77,28 +106,6 @@ def launchMedivia(executable='medivia', instance=None):
     gitOperations.commitAll(instanceRepo)
 
     print('end')
-
-def getHomePathEnvironName() -> str:
-    """
-    Returning crossplatform user home path environment variable name.
-    
-    Returns:
-        str -- crossplatform user home path environment variable name.
-    """
-    
-    # if HOMEPATH defined considering this is the Windows system
-    if os.environ.get('HOMEPATH') is not None:
-        return 'HOMEPATH'
-    # else it is the linux or Mac
-    else:
-        return 'HOME'
-
-def getGameConfigFolderName():
-    if platform.system() is 'Windows':
-        return 'medivia'
-    else:
-        return '.medivia'
-    return 
 
 # def onStart():
 #     pass
@@ -124,6 +131,9 @@ def createInstance(path: str, originPath: str) -> None:
     # os.mkdir(path)
 
     instanceName = os.path.basename(os.path.normpath(path))
+
+    print("creating " + path)
+    os.makedirs(path)
 
     # TODO: test if remote added
     print("cloning from " + originPath + " to " + path)
