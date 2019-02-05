@@ -1,4 +1,5 @@
 import os
+import platform
 import shutil
 import subprocess
 from distutils.dir_util import copy_tree
@@ -8,11 +9,13 @@ from pygit2 import Repository
 
 import gitOperations
 
+# TODO: make config sets for different platforms.
+
 homePathEnvironName = getHomePathEnvironName()
 homePath = os.environ[homePathEnvironName]
 
 # settings
-gameConfigPath = os.path.join(homePath, '.medivia')
+gameConfigPath = os.path.join(homePath, getGameConfigFolderName())
 configsRootPath = os.path.join(homePath, '.medivia-launcher')
 # override for development
 # configsRootPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.medivia-launcher')
@@ -22,7 +25,7 @@ instanciesConfigPath = os.path.join(configsRootPath, 'instancies')
 
 # TODO: make the command to print it
 def version():
-    print("0.0.1")
+    print("0.0.2")
 
 @click.command()
 @click.option('--instance', default='instance1', help='Instance name.')
@@ -90,6 +93,13 @@ def getHomePathEnvironName() -> str:
     else:
         return 'HOME'
 
+def getGameConfigFolderName():
+    if platform.system() is 'Windows':
+        return 'medivia'
+    else:
+        return '.medivia'
+    return 
+
 # def onStart():
 #     pass
 
@@ -128,7 +138,8 @@ def createOrigin(gameConfigsPath, targetPath):
     print("creating " + targetPath)
     os.makedirs(targetPath)
     
-    copy_tree(gameConfigsPath, os.path.join(targetPath, '.medivia'))
+    copy_tree(gameConfigsPath, os.path.join(
+        targetPath, getGameConfigFolderName()))
 
     gitignoreFile = open(os.path.join(targetPath, ".gitignore"), "w")
     gitignoreFile.write(".nv\n")
