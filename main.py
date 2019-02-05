@@ -8,7 +8,8 @@ from pygit2 import Repository
 
 import gitOperations
 
-homePath = os.environ['HOME']
+homePathEnvironName = getHomePathEnvironName()
+homePath = os.environ[homePathEnvironName]
 
 # settings
 gameConfigPath = os.path.join(homePath, '.medivia')
@@ -53,7 +54,7 @@ def launchMedivia(executable='medivia', instance=None):
         exit
 
     env = os.environ.copy()
-    env["HOME"] = currentHomePath
+    env[homePathEnvironName] = currentHomePath
     process = subprocess.Popen([executable], env=env)
 
     pid = process.pid
@@ -73,6 +74,21 @@ def launchMedivia(executable='medivia', instance=None):
     gitOperations.commitAll(instanceRepo)
 
     print('end')
+
+def getHomePathEnvironName() -> str:
+    """
+    Returning crossplatform user home path environment variable name.
+    
+    Returns:
+        str -- crossplatform user home path environment variable name.
+    """
+    
+    # if HOMEPATH defined considering this is the Windows system
+    if os.environ.get('HOMEPATH') is not None:
+        return 'HOMEPATH'
+    # else it is the linux or Mac
+    else:
+        return 'HOME'
 
 # def onStart():
 #     pass
